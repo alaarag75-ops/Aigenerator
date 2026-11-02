@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Taeha AI - مولد الفيديوهات بالذكاء الاصطناعي</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Google Fonts: Tajawal -->
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#f0f5ff',
+              100: '#e0ebff',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+              accent: '#00f2fe',
+              neon: '#4facfe'
+            },
+            dark: {
+              bg: '#090d16',
+              card: '#111827',
+              border: '#1f2937'
+            }
+          },
+          fontFamily: {
+            sans: ['Tajawal', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #090d16;
+      color: #f3f4f6;
+      font-family: 'Tajawal', sans-serif;
+    }
+    .glass-card {
+      background: rgba(17, 24, 39, 0.7);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .gradient-text {
+      background: linear-gradient(135deg, #00f2fe 0%, #4facfe 50%, #6366f1 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .gradient-btn {
+      background: linear-gradient(135deg, #4f46e5 0%, #00f2fe 100%);
+      transition: all 0.3s ease;
+    }
+    .gradient-btn:hover {
+      opacity: 0.95;
+      box-shadow: 0 0 20px rgba(0, 242, 254, 0.4);
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-brand-500 selection:text-white">
+
+  <!-- Navbar -->
+  <header class="border-b border-dark-border glass-card sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl gradient-btn flex items-center justify-center text-white shadow-lg shadow-brand-500/30">
+          <i class="fa-solid font-bold text-xl fa-wand-magic-sparkles"></i>
+        </div>
+        <span class="text-2xl font-black gradient-text">Taeha AI</span>
+      </div>
+
+      <div class="flex items-center gap-4">
+        <div class="bg-dark-bg/80 border border-dark-border px-4 py-2 rounded-full flex items-center gap-2">
+          <i class="fa-solid fa-coins text-amber-400"></i>
+          <span class="text-sm font-bold">الرصيد: <span id="userCredits" class="text-brand-accent">100</span> نقطة</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full grid grid-cols-1 lg:grid-cols-12 gap-8">
+    
+    <!-- قسم الإعدادات والمدخلات -->
+    <section class="lg:col-span-7 space-y-6">
+      
+      <!-- إعداد مفتاح الـ API -->
+      <div class="glass-card p-4 rounded-2xl border border-brand-accent/30 space-y-2">
+        <label class="text-xs text-brand-accent font-bold flex items-center gap-1">
+          <i class="fa-solid fa-key"></i> أدخل مفتاح Replicate API الخاص بك (مجانًا من موقع replicate.com):
+        </label>
+        <input type="password" id="apiKeyInput" placeholder="r8_***********************************" 
+          class="w-full bg-dark-bg border border-dark-border rounded-xl p-2.5 text-xs text-gray-200 focus:outline-none focus:border-brand-accent">
+      </div>
+
+      <!-- مربع كتابة الوصف -->
+      <div class="glass-card p-6 rounded-3xl shadow-xl space-y-4">
+        <div class="flex justify-between items-center">
+          <label class="font-bold text-lg flex items-center gap-2">
+            <i class="fa-solid fa-pen-nib text-brand-accent"></i> وصف المشهد (Prompt)
+          </label>
+          <button id="randomPromptBtn" class="text-xs text-gray-400 hover:text-brand-accent transition flex items-center gap-1">
+            <i class="fa-solid fa-shuffle"></i> وصف عشوائي
+          </button>
+        </div>
+
+        <div class="relative">
+          <textarea id="promptInput" rows="4" dir="rtl"
+            class="w-full bg-dark-bg/90 border border-dark-border rounded-2xl p-4 text-gray-100 placeholder-gray-500 focus:outline-none focus:border-brand-accent transition resize-none leading-relaxed"
+            placeholder="اكتب وصفاً تفصيلياً باللغة الإنجليزية يفضل (أو العربية) لتوليد فيديو حقيقي بالذكاء الاصطناعي..."></textarea>
+        </div>
+      </div>
+
+      <!-- إعدادات التخصيص -->
+      <div class="glass-card p-6 rounded-3xl shadow-xl space-y-6">
+        <h3 class="font-bold text-lg flex items-center gap-2">
+          <i class="fa-solid fa-sliders text-brand-neon"></i> إعدادات الفيديو
+        </h3>
+
+        <!-- زر التوليد -->
+        <button id="generateBtn" class="w-full gradient-btn py-4 rounded-2xl text-white font-bold text-lg flex items-center justify-center gap-3 shadow-lg cursor-pointer">
+          <i class="fa-solid fa-bolt"></i>
+          <span>توليد فيديو حقيقي عبر الـ AI</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- قسم النتيجة ومشغل الفيديو -->
+    <section class="lg:col-span-5 space-y-6 flex flex-col">
+      <div class="glass-card p-6 rounded-3xl shadow-xl flex-1 flex flex-col justify-between min-h-[420px]">
+        <div class="flex justify-between items-center mb-4">
+          <h3 class="font-bold text-lg flex items-center gap-2">
+            <i class="fa-solid fa-film text-brand-accent"></i> معاينة الفيديو الناتج
+          </h3>
+          <span id="statusBadge" class="bg-gray-800 text-gray-400 text-xs px-3 py-1 rounded-full border border-dark-border">في الانتظار</span>
+        </div>
+
+        <!-- منطقة العرض -->
+        <div id="videoContainer" class="relative w-full aspect-video bg-dark-bg border border-dark-border rounded-2xl overflow-hidden flex flex-col items-center justify-center my-auto">
+          
+          <!-- الحالة الافتراضية -->
+          <div id="placeholderState" class="text-center p-6 space-y-3">
+            <div class="w-16 h-16 rounded-full bg-dark-card border border-dark-border flex items-center justify-center mx-auto text-gray-600">
+              <i class="fa-solid fa-video text-2xl"></i>
+            </div>
+            <p class="text-sm text-gray-500">ادخل مفتاح الـ API والوصف ثم اضغط توليد لتنتظر الفيديو الحقيقي</p>
+          </div>
+
+          <!-- شاشة التحميل -->
+          <div id="loadingState" class="hidden text-center p-6 space-y-4 w-full">
+            <div class="w-16 h-16 border-4 border-brand-accent border-t-transparent rounded-full animate-spin mx-auto"></div>
+            <div class="space-y-1">
+              <p id="loadingStatusText" class="font-bold text-gray-200">جاري المعالجة عبر خوادم الـ AI...</p>
+              <p class="text-xs text-gray-400">قد يستغرق توليد الفيديو بضع ثوانٍ، يرجى الانتظار</p>
+            </div>
+          </div>
+
+          <!-- مشغل الفيديو -->
+          <video id="outputVideo" class="hidden w-full h-full object-cover" controls autoplay loop playsinline></video>
+        </div>
+
+        <!-- زر التحميل -->
+        <div class="mt-4">
+          <a id="downloadBtn" download="ai-video.mp4" class="w-full bg-dark-bg border border-dark-border opacity-50 cursor-not-allowed text-center py-3 rounded-xl font-medium text-sm flex items-center justify-center gap-2 transition hover:bg-gray-800">
+            <i class="fa-solid fa-download"></i> تحميل الفيديو الحقيقي
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const promptInput = document.getElementById('promptInput');
+    const apiKeyInput = document.getElementById('apiKeyInput');
+    const generateBtn = document.getElementById('generateBtn');
+    const placeholderState = document.getElementById('placeholderState');
+    const loadingState = document.getElementById('loadingState');
+    const outputVideo = document.getElementById('outputVideo');
+    const statusBadge = document.getElementById('statusBadge');
+    const downloadBtn = document.getElementById('downloadBtn');
+
+    generateBtn.addEventListener('click', async () => {
+      const apiKey = apiKeyInput.value.trim();
+      const prompt = promptInput.value.trim();
+
+      if (!apiKey) {
+        alert('يرجى إدخال مفتاح Replicate API أولاً!');
+        return;
+      }
+      if (!prompt) {
+        alert('يرجى كتابة وصف المشهد!');
+        return;
+      }
+
+      generateBtn.disabled = true;
+      generateBtn.classList.add('opacity-50');
+      placeholderState.classList.add('hidden');
+      outputVideo.classList.add('hidden');
+      loadingState.classList.remove('hidden');
+      statusBadge.innerText = 'جاري التوليد...';
+
+      try {
+        // 1. إرسال الطلب لنموذج توليد الفيديو عبر Replicate API
+        const response = await fetch('https://api.replicate.com/v1/predictions', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${apiKey}`,
+            'Content-Type': 'application/json',
+            'Prefer': 'wait' // لجعل الطلب ينتظر النتيجة مباشرة إذا أمكن
+          },
+          body: JSON.stringify({
+            version: "3f044980d395f9861b425102a926e0e6409832d75e46c72d000830cb4d23056e", // نموذج Stable Video Diffusion
+            input: { prompt: prompt }
+          })
+        });
+
+        const data = await response.json();
+        
+        if (data.error) {
+          throw new Error(data.error);
+        }
+
+        let videoUrl = data.output;
+
+        // إذا كان الطلب قيد المعالجة (Async)، نحتاج لفحص الحالة (Polling)
+        let getUrl = data.urls?.get;
+        while (!videoUrl && getUrl) {
+          await new Promise(r => setTimeout(r, 4000));
+          const checkRes = await fetch(getUrl, {
+            headers: { 'Authorization': `Bearer ${apiKey}` }
+          });
+          const checkData = await checkRes.json();
+          if (checkData.status === 'succeeded') {
+            videoUrl = Array.isArray(checkData.output) ? checkData.output[0] : checkData.output;
+            break;
+          } else if (checkData.status === 'failed') {
+            throw new Error('فشل توليد الفيديو من الخادم.');
+          }
+        }
+
+        if (videoUrl) {
+          outputVideo.src = videoUrl;
+          loadingState.classList.add('hidden');
+          outputVideo.classList.remove('hidden');
+          statusBadge.innerText = 'مكتمل';
+          statusBadge.className = 'bg-emerald-500/20 text-emerald-400 text-xs px-3 py-1 rounded-full border border-emerald-500/30';
+
+          downloadBtn.href = videoUrl;
+          downloadBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+        } else {
+          throw new Error('لم يتم استرجاع رابط الفيديو.');
+        }
+
+      } catch (err) {
+        alert('حدث خطأ: ' + err.message);
+        loadingState.classList.add('hidden');
+        placeholderState.classList.remove('hidden');
+        statusBadge.innerText = 'خطأ';
+      } finally {
+        generateBtn.disabled = false;
+        generateBtn.classList.remove('opacity-50');
+      }
+    });
+  </script>
+</body>
+</html>
